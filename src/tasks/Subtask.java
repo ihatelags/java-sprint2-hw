@@ -1,23 +1,19 @@
 package tasks;
 
-/**
- * tasks.Подзадача.
- *
- * @author Vladimir Ivanov (ivanov.vladimir.l@gmail.com)
- */
-public class Subtask extends Задача {
-	int эпикИД;
 
-	public Subtask(String название, String описание, int ид, String cтатус, int эпикИД) {
-		super(название, описание, ид, cтатус);
-		this.эпикИД = эпикИД;
+public class Subtask extends Task {
+	int epicID;
+
+	public Subtask(String title, String desc, int id, String status, int epicID) {
+		super(title, desc, id, status);
+		this.epicID = epicID;
 	}
 
-	public int getЭпикИД() {
-		return эпикИД;
+	public int getepicID() {
+		return epicID;
 	}
 
-	public void setЭпикИД(int эпикИД) {
-		this.эпикИД = эпикИД;
+	public void setepicID(int epicID) {
+		this.epicID = epicID;
 	}
 }
