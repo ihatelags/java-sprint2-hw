@@ -4,15 +4,16 @@ import tasks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Класс Manager содержит список CRUD методов для всех типов задач.
  */
 public class Manager {
-	private HashMap<Integer, Task> tasks = new HashMap<>();
-	private HashMap<Integer, Epic> epics = new HashMap<>();
-	private HashMap<Integer, Subtask> subtasks = new HashMap<>();
-	private int generateID = 0;
+	private final HashMap<Integer, Task> tasks;
+	private final HashMap<Integer, Epic> epics;
+	private final HashMap<Integer, Subtask> subtasks;
+	private int generatedID = 0;
 
 	public Manager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer, Subtask> subtasks) {
 		this.epics = epics;
@@ -53,15 +54,15 @@ public class Manager {
 	/**
 	 * Получение по идентификатору
 	 */
-	public Task getTaskById(int id) {
+	public Task getTask(int id) {
 		return tasks.get(id);
 	}
 
-	public Task getEpicById(int id) {
+	public Task getEpic(int id) {
 		return epics.get(id);
 	}
 
-	public Task getSubtaskById(int id) {
+	public Task getSubtask(int id) {
 		return subtasks.get(id);
 	}
 
@@ -69,17 +70,25 @@ public class Manager {
 	 * Создание. Сам объект должен передаваться в качестве параметра.
 	 */
 	public void createTask(Task task) {
-		task.setId(++generateID);
+		task.setId(++generatedID);
 		tasks.put(task.getId(), task);
 	}
 
 	public void createEpic(Epic epic) {
-		epic.setId(++generateID);
+		epic.setId(++generatedID);
 		epics.put(epic.getId(), epic);
 	}
 
 	public void createSubtask(Subtask subtask) {
-		subtask.setId(++generateID);
+		subtask.setId(++generatedID);
+		if (subtasks.containsKey(subtask.getId())) {
+			System.out.println("Задача с таким ID уже существует = " + subtask.getId());
+			return;
+		}
+		if (!epics.containsKey(subtask.getEpicId())) {
+			System.out.println("Эпик с таким ID не найден: " + subtask.getEpicId());
+			return;
+		}
 		subtasks.put(subtask.getId(), subtask);
 	}
 
@@ -105,6 +114,15 @@ public class Manager {
 			return;
 		}
 		subtasks.put(subtask.getId(), subtask);
+		Epic epic = epics.get(subtask.getEpicId());
+		ArrayList<Subtask> temp = new ArrayList<>();
+		for (Subtask temp_subtask : subtasks.values()) {
+			if (temp_subtask.getEpicId() == epic.getId()) {
+				temp.add(temp_subtask);
+			}
+		}
+		epic.setSubtasks(temp);
+
 	}
 
 	/**
@@ -118,29 +136,42 @@ public class Manager {
 		epics.remove(id);
 	}
 
-	public void deleteSubtask(int id) {
-		subtasks.remove(id);
+	public void deleteSubtask(Subtask subtask) {
+		if (epics.containsKey(subtask.getEpicId())) {
+			Epic epic = epics.get(subtask.getEpicId());
+			epic.getSubtasks().remove(subtask);
+		}
+		subtasks.remove(subtask.getId());
 	}
 
 	/**
 	 * Обновление статуса Эпика
 	 */
-	private void updateStatus(Epic epic) {
-		int countDone = 0;
-		int countNew = 0;
-		for (Subtask subtask : epic.getSubtasks()) {
-			if (subtask.getStatus() == "NEW") {
-				countNew++;
-			} else if (subtask.getStatus() == "DONE") {
-				countDone++;
+	public void updateEpicStatus(Epic epic) {
+		HashSet<String> subtasksSet = new HashSet<>();
+
+		int countSubtask = epic.getSubtasks().size();
+		// если у эпика нет подзадач, то статус должен быть NEW.
+		if (countSubtask == 0) {
+			epic.setStatus("NEW");
+		} else {
+			for (Subtask subtask : epic.getSubtasks()) {
+				if (subtask.getStatus().equals("NEW")) {
+					subtasksSet.add("NEW");
+				} else if (subtask.getStatus().equals("DONE")) {
+					subtasksSet.add("DONE");
+				} else {
+					subtasksSet.add("IN_PROGRESS");
+				}
 			}
-			if (countNew == Subtasks.size()) {
-				epics.get(subtask.getEpicId()).setStatus("NEW");
-			} else if (countDone == Subtasks.size()) {
-				epics.get(subtask.getEpicId()).setStatus("DONE");
+			if (subtasksSet.size() == 1 && subtasksSet.toArray()[0] == ("NEW")) {
+				epic.setStatus("NEW");
+			} else if (subtasksSet.size() == 1 && subtasksSet.toArray()[0] == ("DONE")) {
+				epic.setStatus("DONE");
 			} else {
-				epics.get(subtask.getEpicId()).setStatus("IN_PROGRESS");
+				epic.setStatus("IN_PROGRESS");
 			}
+
 		}
 	}
 }

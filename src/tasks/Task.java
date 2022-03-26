@@ -3,10 +3,10 @@ package tasks;
 import java.util.Objects;
 
 public class Task {
-	private String title;
-	private String desc;
-	private int id;
-	private String status;
+	protected String title;
+	protected String desc;
+	protected int id;
+	protected String status;
 
 	public Task(String title, String desc, int id, String status) {
 		this.title = title;
