@@ -2,13 +2,13 @@ package tests;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+
 import manager.Manager;
 import tasks.*;
 
 public class Tests {
 
-    public static void doTest()
-    {
+    public static void doTest() {
         Manager manager = new Manager(new HashMap<>(), new HashMap<>(), new HashMap<>());
 
         //Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
@@ -56,7 +56,7 @@ public class Tests {
 
         //меняем статус задачи task1
         System.out.println("Меняем статус задачи1...\n");
-        Task updatedTask = new Task(task1.getTitle(), task1.getDesc(), task1.getId(),Status.IN_PROGRESS);
+        Task updatedTask = new Task(task1.getTitle(), task1.getDesc(), task1.getId(), Status.IN_PROGRESS);
         manager.updateTask(updatedTask);
 
         //меняем статус подзадачи subtask1
@@ -75,7 +75,6 @@ public class Tests {
         System.out.println(manager.getTasks());
         System.out.println(manager.getSubtasks());
         System.out.println();
-
 
         //попробуйте удалить одну из задач и один из эпиков.
         System.out.println("Удаляем одну из задач и один из эпиков...\n");
