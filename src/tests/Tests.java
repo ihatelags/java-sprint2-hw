@@ -12,7 +12,7 @@ public class Tests {
         Manager manager = new Manager(new HashMap<>(), new HashMap<>(), new HashMap<>());
 
         //Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
-        System.out.println("Создаем тестовые объекты...\n");
+        System.out.println("Создаем тестовые объекты...");
         Task task1 = new Task("task1 title", "task1 desc", "NEW");
         manager.createTask(task1);
         Task task2 = new Task("task2 title", "task2 desc", Status.NEW);
@@ -51,6 +51,13 @@ public class Tests {
         System.out.println("Список подзадач: \n" + manager.getSubtasks());
         System.out.println();
 
+        //Получение задач по ид
+        System.out.println("Получаем задачи по их ид...");
+        System.out.println(manager.getTask(task1.getId()));
+        System.out.println(manager.getSubtask(subtask1.getId()));
+        System.out.println(manager.getEpic(epic1.getId()));
+        System.out.println();
+
         //Измените статусы созданных объектов, распечатайте. Проверьте, что статус задачи и подзадачи сохранился,
         // а статус эпика рассчитался по статусам подзадач.
 
@@ -68,7 +75,6 @@ public class Tests {
                 subtask1.getEpicId());
         manager.updateSubtask(updatedSubtask);
         manager.updateEpic(epic1);
-        manager.updateEpicStatus(epic1);
 
         System.out.println("Списки задач после смены статуса:");
         System.out.println(manager.getEpics());
@@ -87,6 +93,23 @@ public class Tests {
         System.out.println(manager.getTasks());
         System.out.println(manager.getSubtasks());
         System.out.println();
+
+
+
+        //очищение списков задач
+        System.out.println("Очищаем все списки задач...\n");
+        manager.clearTasks();
+        manager.clearEpics();
+        manager.clearSubtasks();
+
+        System.out.println("Списки задач после очищения:");
+        System.out.println(manager.getEpics());
+        System.out.println(manager.getTasks());
+        System.out.println(manager.getSubtasks());
+        System.out.println();
+
+
+
     }
 
 }
