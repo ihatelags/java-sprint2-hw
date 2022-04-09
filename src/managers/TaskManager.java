@@ -62,7 +62,7 @@ public interface TaskManager{
 
     void deleteEpic(int id);
 
-    void deleteSubtask(Subtask subtask);
+    void deleteSubtask(int id);
 
     Task getByID(int id);
 }
