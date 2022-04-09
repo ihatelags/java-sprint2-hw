@@ -6,16 +6,16 @@ public class Task {
     protected String title;
     protected String desc;
     protected int id;
-    protected String status;
+    protected Status status;
 
-    public Task(String title, String desc, int id, String status) {
+    public Task(String title, String desc, int id, Status status) {
         this.title = title;
         this.desc = desc;
         this.id = id;
         this.status = status;
     }
 
-    public Task(String title, String desc, String status) {
+    public Task(String title, String desc, Status status) {
         this.title = title;
         this.desc = desc;
         this.id = 0;
@@ -59,11 +59,11 @@ public class Task {
         this.id = id;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
