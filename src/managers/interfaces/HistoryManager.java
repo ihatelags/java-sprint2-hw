@@ -1,4 +1,4 @@
-package managers;
+package managers.interfaces;
 
 import tasks.Task;
 import java.util.List;
@@ -19,8 +19,6 @@ public interface HistoryManager {
      */
     void remove(Task task);
 
-    /**
-     * Обновление истории задач
-     */
-    void update(Task task);
+    void update(Task Task);
+
 }
