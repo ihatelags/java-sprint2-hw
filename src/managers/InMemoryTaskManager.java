@@ -26,6 +26,9 @@ public class InMemoryTaskManager implements Manager {
 
     @Override
     public void deleteTasks() {
+        for (Task task : tasks.values()) {
+            historyManager.remove(task);
+        }
         tasks.clear();
     }
 
@@ -105,7 +108,6 @@ public class InMemoryTaskManager implements Manager {
             updateEpicStatus(epic);
         }
         subtasks.put(subtask.getId(), subtask);
-        historyManager.update(subtask);
     }
 
     @Override
@@ -212,8 +214,6 @@ public class InMemoryTaskManager implements Manager {
             } else if (subtasks.containsKey(id)) {
                 return getSubtask(id);
             }
-        } else {
-            System.out.println("Ошибка! Такого ID не существует");
         }
         return null;
     }
@@ -227,8 +227,6 @@ public class InMemoryTaskManager implements Manager {
             } else if (subtasks.containsKey(id)) {
                 deleteSubtask(id);
             }
-        } else {
-            System.out.println("Ошибка! Такого ID не существует");
         }
     }
 
