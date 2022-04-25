@@ -35,8 +35,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(Task task) {
-        final Node<Task> node = nodeMap.get(task.getId());
+    public void remove(int id) {
+        final Node<Task> node = nodeMap.get(id);
         if (node != null) {
             removeNode(node);
         }
@@ -77,16 +77,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    @Override
-    public void update(Task task) {
-        Node<Task> oldNode = nodeMap.get(task.getId());
-        if (oldNode != null) {
-            Node<Task> newNode = new Node<>(oldNode.prev, task, oldNode.next);
-            nodeMap.put(task.getId(), newNode);
-            if (tail == oldNode) tail = newNode;
-            if (head == oldNode) head = newNode;
-        }
-    }
 
     /**
      * Вспомогательный класс для работы двусвязного списка
