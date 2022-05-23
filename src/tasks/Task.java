@@ -2,6 +2,7 @@ package tasks;
 
 import java.util.Objects;
 
+
 public class Task {
     protected String title;
     protected String desc;
@@ -65,6 +66,10 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public TaskTypes getType() {
+        return TaskTypes.TASK;
     }
 
     @Override

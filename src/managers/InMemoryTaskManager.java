@@ -13,11 +13,11 @@ import java.util.List;
  * Класс InMemoryTaskManager содержит список CRUD методов для всех типов задач.
  */
 public class InMemoryTaskManager implements Manager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private int generatedID = 0;
-    private final HistoryManager historyManager = Managers.getDefaultHistoryManager();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    protected int generatedID = 0;
+    protected final HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
     @Override
     public List<Task> getTasks() {

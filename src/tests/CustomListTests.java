@@ -2,15 +2,18 @@ package tests;
 
 import managers.Managers;
 import managers.interfaces.Manager;
+import managers.FileBackedTaskManager;
 import tasks.*;
 
 import java.util.ArrayList;
+import java.io.File;
 
 public class CustomListTests {
 
     public static void doCustomListTests() {
 
         Manager taskManager = Managers.getDefault();
+        Менеджер менеджер2 = new FileBackedTasksManager(new File("task.csv"), true);
 
         //создайте две задачи, эпик с тремя подзадачами и эпик без подзадач;
         System.out.println("Создаем тестовые объекты...");
