@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Класс InMemoryTaskManager содержит список CRUD методов для всех типов задач.
  */
-public class InMemoryTaskManager implements Manager {
+public class InMemoryTasksManager implements Manager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();

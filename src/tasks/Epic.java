@@ -22,9 +22,13 @@ public class Epic extends Task {
         this.subtasks = subtasks;
     }
 
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
+
     public String toString() {
         return "tasks.Epic{" +
-                "title='" + title + '\'' +
+                "title='" + name + '\'' +
                 ", desc='" + desc + '\'' +
                 ", id=" + id +
                 ", status='" + status + '\'' +

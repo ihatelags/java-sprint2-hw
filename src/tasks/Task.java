@@ -4,20 +4,20 @@ import java.util.Objects;
 
 
 public class Task {
-    protected String title;
+    protected String name;
     protected String desc;
     protected int id;
     protected Status status;
 
-    public Task(String title, String desc, int id, Status status) {
-        this.title = title;
+    public Task(String name, String desc, int id, Status status) {
+        this.name = name;
         this.desc = desc;
         this.id = id;
         this.status = status;
     }
 
-    public Task(String title, String desc, Status status) {
-        this.title = title;
+    public Task(String name, String desc, Status status) {
+        this.name = name;
         this.desc = desc;
         this.id = 0;
         this.status = status;
@@ -28,20 +28,20 @@ public class Task {
         if (this == o) return true;
         if (!(o instanceof Task)) return false;
         Task Task = (Task) o;
-        return id == Task.id && Objects.equals(title, Task.title) && Objects.equals(desc, Task.desc) && Objects.equals(status, Task.status);
+        return id == Task.id && Objects.equals(name, Task.name) && Objects.equals(desc, Task.desc) && Objects.equals(status, Task.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, desc, id, status);
+        return Objects.hash(name, desc, id, status);
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDesc() {
@@ -68,14 +68,14 @@ public class Task {
         this.status = status;
     }
 
-    public TaskTypes getType() {
-        return TaskTypes.TASK;
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     @Override
     public String toString() {
         return "tasks.Task{" +
-                "title='" + title + '\'' +
+                "title='" + name + '\'' +
                 ", desc='" + desc + '\'' +
                 ", id=" + id +
                 ", status='" + status + '\'' +

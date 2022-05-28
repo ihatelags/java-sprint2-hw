@@ -8,7 +8,7 @@ import java.io.File;
 public class Managers {
 
     public static Manager getDefault() {
-        return new FileBackedTaskManager(new File("task.csv"), true);
+        return new FileBackedTasksManager(new File("tasks.csv"));
         //return new InMemoryTaskManager();
     }
 

@@ -1,19 +1,18 @@
 package tests;
 
+import managers.FileBackedTasksManager;
 import managers.Managers;
 import managers.interfaces.Manager;
-import managers.FileBackedTaskManager;
 import tasks.*;
 
 import java.util.ArrayList;
 import java.io.File;
 
-public class CustomListTests {
+public class FileBackedTests {
 
-    public static void doCustomListTests() {
+    public static void doFileBackedTests() {
 
         Manager taskManager = Managers.getDefault();
-        Менеджер менеджер2 = new FileBackedTasksManager(new File("task.csv"), true);
 
         //создайте две задачи, эпик с тремя подзадачами и эпик без подзадач;
         System.out.println("Создаем тестовые объекты...");
@@ -51,31 +50,23 @@ public class CustomListTests {
         //после каждого запроса выведите историю и убедитесь, что в ней нет повторов
         System.out.println("Наполняем и выводим историю просмотров...");
         taskManager.getByID(1);
-        System.out.println(taskManager.getHistory());
         taskManager.getByID(2);
-        System.out.println(taskManager.getHistory());
         taskManager.getByID(1);
-        System.out.println(taskManager.getHistory());
         taskManager.getByID(2);
-        System.out.println(taskManager.getHistory());
         taskManager.getByID(5);
-        System.out.println(taskManager.getHistory());
         taskManager.getByID(3);
-        System.out.println(taskManager.getHistory());
         taskManager.getByID(7);
+        System.out.println("Выводим историю...");
         System.out.println(taskManager.getHistory());
         System.out.println();
 
-        //Удалить задачу из списка задач
-        System.out.println("Удаляем задачу...");
-        taskManager.deleteByID(task2.getId());
-        System.out.println(taskManager.getHistory());
-        System.out.println();
-
-        //Удалить эпик из списка задач
-        System.out.println("Удаляем эпик с подзадачами...");
-        taskManager.deleteByID(epic1.getId());
-        System.out.println(taskManager.getHistory());
-
+        // Создайте новый FileBackedTasksManager менеджер из этого же файла
+        // Проверьте, что история просмотра восстановилась верно и все задачи, эпики, подзадачи, которые были в старом,
+        // есть в новом менеджере
+        FileBackedTasksManager newFileBackedTasksManager = FileBackedTasksManager.loadFromFile(
+                new File("tasks.csv"));
+        System.out.println("Выводим историю файловой версии...");
+        System.out.println(newFileBackedTasksManager.getByID(1));
+        System.out.println(newFileBackedTasksManager.getHistory());
     }
 }
