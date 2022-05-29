@@ -31,10 +31,10 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
             for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
                 writer.append(toString(entry.getValue()));
             }
-            for (Map.Entry<Integer, Subtask> entry : subtasks.entrySet()) {
+            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
                 writer.append(toString(entry.getValue()));
             }
-            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
+            for (Map.Entry<Integer, Subtask> entry : subtasks.entrySet()) {
                 writer.append(toString(entry.getValue()));
             }
             writer.newLine();
@@ -195,10 +195,7 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     //   метод, который будет восстанавливать данные менеджера из файла при запуске программы
     public static FileBackedTasksManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(
-                        Files.newInputStream(file.toPath()), UTF_8))
-        ) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.equals("id,type,name,status,description,epic")) {
@@ -217,6 +214,11 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
                         break;
                     case SUBTASK:
                         fileBackedTasksManager.subtasks.put(task.getId(), (Subtask) task);
+                        Integer epicID = ((Subtask) task).getEpicId();
+                        Epic epic = fileBackedTasksManager.epics.get(epicID);
+                        if (epic != null) {
+                            epic.getSubtasks().add((Subtask) task);
+                        }
                         break;
                 }
             }
