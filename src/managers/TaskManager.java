@@ -1,15 +1,16 @@
-package managers.interfaces;
+package managers;
 
 import tasks.Subtask;
 import tasks.Task;
 import tasks.Epic;
 
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Менеджер задач.
  */
-public interface Manager {
+public interface TaskManager {
 
     List<Task> getTasks();
 
@@ -48,4 +49,8 @@ public interface Manager {
     void deleteByID(int id);
 
     List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    boolean checkTimeIsValid(Task task);
 }

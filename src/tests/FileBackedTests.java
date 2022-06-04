@@ -1,8 +1,8 @@
 package tests;
 
-import managers.FileBackedTasksManager;
+import managers.FileBackedTaskManager;
 import managers.Managers;
-import managers.interfaces.Manager;
+import managers.TaskManager;
 import tasks.*;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class FileBackedTests {
 
     public static void doFileBackedTests() {
 
-        Manager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
 
         //создайте две задачи, эпик с тремя подзадачами и эпик без подзадач;
         System.out.println("Создаем тестовые объекты...");
@@ -63,7 +63,7 @@ public class FileBackedTests {
         // Создайте новый FileBackedTasksManager менеджер из этого же файла
         // Проверьте, что история просмотра восстановилась верно и все задачи, эпики, подзадачи, которые были в старом,
         // есть в новом менеджере
-        FileBackedTasksManager newFileBackedTasksManager = FileBackedTasksManager.loadFromFile(
+        FileBackedTaskManager newFileBackedTasksManager = FileBackedTaskManager.loadFromFile(
                 new File("tasks.csv"));
         System.out.println("Выводим историю файловой версии...");
         System.out.println(newFileBackedTasksManager.getByID(1));

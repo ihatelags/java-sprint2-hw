@@ -1,10 +1,5 @@
-id,type,name,status,description,epic
-1,TASK,task1 title,NEW,task1 desc,
-2,TASK,task2 title,NEW,task2 desc,
-4,SUBTASK,subtask1 title,NEW,subtask1 desc,3
-5,SUBTASK,subtask2 title,NEW,subtask2 title,3
-6,SUBTASK,subtask3 title,NEW,subtask3 title,3
-3,EPIC,epic1 title,NEW,epic1 desc,
-7,EPIC,epic2 title,NEW,epic2 desc,
+id,type,name,status,description,startTime,duration,epic
+1,TASK,task title,NEW,task1 desc,04.06.2022 16:55,15,
+2,EPIC,epic1 title,NEW,epic1 desc,04.06.2022 17:11,15,
+3,SUBTASK,subtask1 title,NEW,subtask1 desc,04.06.2022 17:11,15,2
 
-1,2,5,3,7

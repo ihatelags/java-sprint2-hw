@@ -1,6 +1,5 @@
 package managers;
 
-import managers.interfaces.HistoryManager;
 import tasks.Task;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(node);
         }
         linkLast(task);
-
     }
 
     @Override

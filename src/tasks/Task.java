@@ -1,5 +1,6 @@
 package tasks;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -8,12 +9,38 @@ public class Task {
     protected String desc;
     protected int id;
     protected Status status;
+    protected LocalDateTime startTime;
+    protected int duration;
+    protected LocalDateTime endTime;
+
+    public Task(String name, String desc, int id, Status status, LocalDateTime startTime, int duration) {
+        this.name = name;
+        this.desc = desc;
+        this.id = id;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime  = startTime.plusMinutes(duration);
+    }
+
+    public Task(String name, String desc, Status status, LocalDateTime startTime, int duration) {
+        this.name = name;
+        this.desc = desc;
+        this.id = 0;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime  = startTime.plusMinutes(duration);
+    }
 
     public Task(String name, String desc, int id, Status status) {
         this.name = name;
         this.desc = desc;
         this.id = id;
         this.status = status;
+        this.startTime = null;
+        this.duration = 0;
+        this.endTime  = null;
     }
 
     public Task(String name, String desc, Status status) {
@@ -21,6 +48,9 @@ public class Task {
         this.desc = desc;
         this.id = 0;
         this.status = status;
+        this.startTime = null;
+        this.duration = 0;
+        this.endTime  = null;
     }
 
     @Override
@@ -72,6 +102,30 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public String toString() {
         return "tasks.Task{" +
@@ -79,6 +133,8 @@ public class Task {
                 ", desc='" + desc + '\'' +
                 ", id=" + id +
                 ", status='" + status + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 }
