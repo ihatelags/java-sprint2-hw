@@ -20,7 +20,6 @@ public class Task {
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
-        this.endTime  = startTime.plusMinutes(duration);
     }
 
     public Task(String name, String desc, Status status, LocalDateTime startTime, int duration) {
@@ -30,7 +29,6 @@ public class Task {
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
-        this.endTime  = startTime.plusMinutes(duration);
     }
 
     public Task(String name, String desc, int id, Status status) {
@@ -40,7 +38,6 @@ public class Task {
         this.status = status;
         this.startTime = null;
         this.duration = 0;
-        this.endTime  = null;
     }
 
     public Task(String name, String desc, Status status) {
@@ -50,7 +47,6 @@ public class Task {
         this.status = status;
         this.startTime = null;
         this.duration = 0;
-        this.endTime  = null;
     }
 
     @Override
@@ -115,7 +111,7 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return endTime;
+        return (startTime != null) ? this.startTime.plusMinutes(duration) : null;
     }
 
     public void setStartTime(LocalDateTime startTime) {

@@ -30,7 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (newTaskStart == null) {
             return true;
         }
-        for (Task task : tasks.values()) {
+        for (Task task : sortedTasks) {
             if (newTask.getId() == (task.getId())) {
                 return true;
             }
@@ -46,24 +46,6 @@ public class InMemoryTaskManager implements TaskManager {
                 isValid = false;
             }
         }
-        if (newTask instanceof Subtask) {
-            for (Subtask task : subtasks.values()) {
-                if (newTask.getId() == (task.getId())) {
-                    return true;
-                }
-                LocalDateTime taskStart = task.getStartTime();
-                LocalDateTime taskEnd = task.getEndTime();
-                if ((newTaskStart.isEqual(taskStart)) || (newTaskEnd.isEqual(taskEnd))) {
-                    isValid = false;
-                }
-                if (newTaskStart.isAfter(taskStart) && (newTaskStart.isBefore(taskEnd))) {
-                    isValid = false;
-                }
-                if (newTaskEnd.isAfter(taskStart) && (newTaskEnd.isBefore(taskEnd))) {
-                    isValid = false;
-                }
-            }
-        }
         return isValid;
     }
 
@@ -75,9 +57,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTasks() {
         for (Task task : tasks.values()) {
-            historyManager.remove(task.getId());
+            deleteTask(task.getId());
         }
-        tasks.clear();
     }
 
     @Override

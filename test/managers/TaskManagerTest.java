@@ -1,6 +1,7 @@
 package managers;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -10,9 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeSet;
-
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,9 +56,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void shouldUpdateTask() {
         Task taskNew = new Task("updated task", "task1 desc", task.getId(), Status.NEW,
-                LocalDateTime.now(), 15);
+                LocalDateTime.now().plusDays(1), 15);
         taskManager.updateTask(taskNew);
         assertEquals(taskNew, taskManager.getTask(task.getId()));
+        assertEquals(taskNew.getStartTime().withNano(0), task.getStartTime().plusDays(1).withNano(0));
     }
 
     @Test

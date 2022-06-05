@@ -58,7 +58,6 @@ public class Epic extends Task {
         if (!startTimeList.isEmpty()) {
             LocalDateTime startTime = startTimeList.stream().min(LocalDateTime::compareTo).get();
             epic.setStartTime(startTime);
-            calculateEpicDuration(epic);
             epic.setEndTime(startTime.plusMinutes(epic.getDuration()));
         }
     }
