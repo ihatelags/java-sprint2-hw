@@ -82,7 +82,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void shouldUpdateSubtask() {
         Subtask subtaskNew = new Subtask("updated subtask", "desc", subtask.getId(), Status.NEW,
-                LocalDateTime.now(), 15, epic.getId());
+                subtask.getStartTime().plusMinutes(1), 15, epic.getId());
         taskManager.updateSubtask(subtaskNew);
         assertEquals(subtaskNew, taskManager.getSubtask(subtask.getId()));
     }

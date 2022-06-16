@@ -24,29 +24,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public boolean checkTimeIsValid(Task newTask) {
-        boolean isValid = true;
         LocalDateTime newTaskStart = newTask.getStartTime();
         LocalDateTime newTaskEnd = newTask.getEndTime();
         if (newTaskStart == null) {
             return true;
         }
         for (Task task : sortedTasks) {
-            if (newTask.getId() == (task.getId())) {
-                return true;
-            }
             LocalDateTime taskStart = task.getStartTime();
             LocalDateTime taskEnd = task.getEndTime();
-            if ((newTaskStart.isEqual(taskStart)) || (newTaskEnd.isEqual(taskEnd))) {
-                isValid = false;
+            if (newTaskStart.isEqual(taskStart) || newTaskEnd.isEqual(taskEnd)) {
+                return false;
             }
             if (newTaskStart.isAfter(taskStart) && (newTaskStart.isBefore(taskEnd))) {
-                isValid = false;
+                return false;
             }
             if (newTaskEnd.isAfter(taskStart) && (newTaskEnd.isBefore(taskEnd))) {
-                isValid = false;
+                return false;
             }
         }
-        return isValid;
+        return true;
     }
 
     @Override
@@ -131,22 +127,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        int id = subtask.getId();
+        Subtask oldSubtask = subtasks.get(id);
+        sortedTasks.remove(oldSubtask);
         if (!checkTimeIsValid(subtask)){
+            sortedTasks.add(oldSubtask);
             return;
         }
-        if (!subtasks.containsKey(subtask.getId())) {
+        if (!subtasks.containsKey(id)) {
             return;
         }
         //обновляем список подзадач в эпике
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
-            Subtask subtaskToRemove = subtasks.get(subtask.getId());
-            epic.getSubtasks().remove(subtaskToRemove);
+            epic.getSubtasks().remove(oldSubtask);
             epic.getSubtasks().add(subtask);
             updateEpic(epic);
         }
-        subtasks.put(subtask.getId(), subtask);
-        sortedTasks.remove(subtasks.get(subtask.getId()));
+        subtasks.put(id, subtask);
         sortedTasks.add(subtask);
     }
 
