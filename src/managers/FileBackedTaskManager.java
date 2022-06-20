@@ -23,8 +23,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-
-    private void save() {
+    protected void save() {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             //Заголовок
             writer.write("id,type,name,status,description,startTime,duration,epic" + "\n");
@@ -92,7 +91,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
     //метод для сохранения менеджера истории из CSV
-    private static String historyToString(HistoryManager manager) {
+    protected static String historyToString(HistoryManager manager) {
         StringBuilder sb = new StringBuilder();
         for (Task task : manager.getHistory()) {
             sb.append(task.getId()).append(",");
@@ -113,13 +112,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         }
         return history;
-    }
-
-    @Override
-    public List<Task> getTasks() {
-        final List<Task> tasks = super.getTasks();
-        save();
-        return tasks;
     }
 
     @Override
@@ -241,39 +233,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = new FileBackedTaskManager();
 
         //создайте две задачи, эпик с тремя подзадачами и эпик без подзадач;
         System.out.println("Создаем тестовые объекты...");
-        Task task1 = new Task("task1 title", "task1 desc", Status.NEW);
+        Task task1 = new Task("task1 title", "task1 desc", Status.NEW, LocalDateTime.now(), 15);
         taskManager.createTask(task1);
-        Task task2 = new Task("task2 title", "task2 desc", Status.NEW);
+        Task task2 = new Task("task2 title", "task2 desc", Status.NEW, LocalDateTime.now(), 15);
         taskManager.createTask(task2);
         Epic epic1 = new Epic("epic1 title",
                 "epic1 desc",
                 Status.NEW,
                 new ArrayList<>());
         taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("subtask1 title",
-                "subtask1 desc",
-                Status.NEW,
-                epic1.getId());
+        Subtask subtask1 = new Subtask("subtask1 title","subtask1 desc",Status.NEW,
+                LocalDateTime.now().plusMinutes(16), 15,epic1.getId());
         taskManager.createSubtask(subtask1);
-        Subtask subtask2 = new Subtask("subtask2 title",
-                "subtask2 title",
-                Status.NEW,
-                epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2 title","subtask2 desc",Status.NEW,
+                LocalDateTime.now().plusMinutes(35), 15,epic1.getId());
         taskManager.createSubtask(subtask2);
-        Subtask subtask3 = new Subtask("subtask3 title",
-                "subtask3 title",
-                Status.NEW,
-                epic1.getId());
-        taskManager.createSubtask(subtask3);
-        Epic epic2 = new Epic("epic2 title",
-                "epic2 desc",
-                Status.NEW,
-                new ArrayList<>());
-        taskManager.createEpic(epic2);
 
         //запросите созданные задачи несколько раз в разном порядке
         //после каждого запроса выведите историю и убедитесь, что в ней нет повторов

@@ -100,6 +100,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public List<Task> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
+
+    @Override
     public Subtask getSubtask(int id) {
         Subtask subtask = subtasks.get(id);
         if (subtask != null) {
@@ -166,6 +171,13 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(id);
         sortedTasks.remove(subtasks.get(id));
         subtasks.remove(id);
+    }
+
+    @Override
+    public void deleteSubtasks() {
+        for (Task subtask : subtasks.values()) {
+            deleteSubtask(subtask.getId());
+        }
     }
 
     @Override

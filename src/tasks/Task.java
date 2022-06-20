@@ -11,7 +11,6 @@ public class Task {
     protected Status status;
     protected LocalDateTime startTime;
     protected int duration;
-    protected LocalDateTime endTime;
 
     public Task(String name, String desc, int id, Status status, LocalDateTime startTime, int duration) {
         this.name = name;
@@ -116,10 +115,6 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
     }
 
     @Override

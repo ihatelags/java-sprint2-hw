@@ -1,12 +1,13 @@
 package managers;
 
-import java.io.File;
-
 public class Managers {
 
     public static TaskManager getDefault() {
-        return new FileBackedTaskManager(new File("tasks.csv"));
-        //return new InMemoryTaskManager();
+        return new HTTPTaskManager("http://localhost:8081");
+    }
+
+    public static TaskManager getFileBackedTaskManager() {
+        return new FileBackedTaskManager();
     }
 
     public static HistoryManager getDefaultHistoryManager() {

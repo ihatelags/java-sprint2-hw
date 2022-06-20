@@ -7,6 +7,7 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     Subtask subtask;
 
     @BeforeEach
-    void init() {
+    void init() throws IOException {
         taskManager.deleteTasks();
         task = new Task("task title", "task1 desc", Status.NEW, LocalDateTime.now(), 15);
         taskManager.createTask(task);

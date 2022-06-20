@@ -24,6 +24,8 @@ public interface TaskManager {
 
     void deleteTask(int id);
 
+    List<Task> getSubtasks();
+
     Subtask getSubtask(int id);
 
     void createSubtask(Subtask subtask);
@@ -31,6 +33,8 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     void deleteSubtask(int id);
+
+    void deleteSubtasks();
 
     List<Epic> getEpics();
 
