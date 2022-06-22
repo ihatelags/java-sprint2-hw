@@ -18,12 +18,10 @@ public class KVTaskClient {
     public KVTaskClient(String url) {
         this.url = url;
         URI uri = URI.create(url + "/register");
-        HttpRequest request = HttpRequest.
-                newBuilder().
-                GET().
-                uri(uri).
-                header("Accept", "text/html").
-                build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(uri)
+                .build();
 
         handler = HttpResponse.BodyHandlers.ofString();
         try {
@@ -40,11 +38,10 @@ public class KVTaskClient {
 
     public void put(String key, String json) {
         URI uri = URI.create(url + "/save/" + key + "?API_TOKEN=" + apiKey);
-        HttpRequest request = HttpRequest
-                .newBuilder()
+        HttpRequest request = HttpRequest.newBuilder()
+                .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .uri(uri)
-                .header("Accept", "application/json")
                 .build();
         try {
             response = client.send(request, handler);
@@ -54,12 +51,12 @@ public class KVTaskClient {
     }
 
     public String load(String key) {
-        URI uri = URI.create(url + "/load/"+key+"?API_TOKEN=" + apiKey);
+        URI uri = URI.create(url + "/load/" + key + "?API_TOKEN=" + apiKey);
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
         request = requestBuilder
+                .header("Accept", "application/json")
                 .GET()
                 .uri(uri)
-                .header("Accept", "application/json")
                 .build();
         try {
             response = client.send(request, handler);

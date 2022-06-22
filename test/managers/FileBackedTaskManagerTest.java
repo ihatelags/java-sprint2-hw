@@ -16,7 +16,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
     @Override
     void init() {
         try {
-            taskManager = (FileBackedTaskManager) Managers.getDefault();
+            taskManager = new FileBackedTaskManager();
             super.init();
         }
         catch(IOException e) {

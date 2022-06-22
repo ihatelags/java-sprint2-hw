@@ -2,6 +2,7 @@ package managers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import exceptions.ManagerSaveException;
@@ -28,11 +29,10 @@ public class HttpTaskServer {
             throw new ManagerSaveException("Сервер не создан: " + e.getMessage());
         }
     }
-
-    public HttpTaskServer(int altPort) {
+    public HttpTaskServer(TaskManager manager, int altPort) {
+        this.manager = manager;
         try {
-            server = HttpServer.create();
-            server.bind(new InetSocketAddress(altPort), 0);
+            server = HttpServer.create(new InetSocketAddress(altPort), 0);
             server.createContext("/tasks", this::handle);
         } catch (IOException e) {
             throw new ManagerSaveException("Сервер не создан: " + e.getMessage());
@@ -67,7 +67,6 @@ public class HttpTaskServer {
         if (arrUri[arrUri.length - 1].contains("?")) {
             id = Integer.parseInt(arrUri[arrUri.length - 1].split("=")[1]);
         }
-
         switch (method) {
             case "GET":
                 switch (taskType) {

@@ -1,5 +1,6 @@
 package managers;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -20,17 +21,26 @@ abstract class TaskManagerTest<T extends TaskManager> {
     Task task;
     Epic epic;
     Subtask subtask;
+    LocalDateTime now = LocalDateTime.now();
 
     @BeforeEach
     void init() throws IOException {
         taskManager.deleteTasks();
-        task = new Task("task title", "task1 desc", Status.NEW, LocalDateTime.now(), 15);
+        taskManager.deleteEpics();
+        task = new Task("task title", "task1 desc", 1,  Status.NEW, now, 15);
         taskManager.createTask(task);
-        epic = new Epic("epic1 title","epic1 desc",Status.NEW,new ArrayList<>());
+        epic = new Epic("epic1 title","epic1 desc", Status.NEW,new ArrayList<>());
         taskManager.createEpic(epic);
-        subtask = new Subtask("subtask1 title","subtask1 desc",Status.NEW,
-                LocalDateTime.now().plusMinutes(16), 15,epic.getId());
+        subtask = new Subtask("subtask1 title","subtask1 desc",3,  Status.NEW,
+                now.plusMinutes(16), 15,epic.getId());
         taskManager.createSubtask(subtask);
+        taskManager.getByID(1);
+        taskManager.getByID(2);
+        taskManager.getByID(3);
+    }
+
+    @AfterEach
+    void stop() {
     }
 
     @Test
@@ -57,10 +67,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void shouldUpdateTask() {
         Task taskNew = new Task("updated task", "task1 desc", task.getId(), Status.NEW,
-                LocalDateTime.now().plusDays(1), 15);
+                now.plusDays(1), 15);
         taskManager.updateTask(taskNew);
         assertEquals(taskNew, taskManager.getTask(task.getId()));
-        assertEquals(taskNew.getStartTime().withNano(0), task.getStartTime().plusDays(1).withNano(0));
+        assertEquals(taskNew.getStartTime(), task.getStartTime().plusDays(1));
     }
 
     @Test
@@ -153,9 +163,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void shouldGetHistory() {
-        taskManager.getByID(task.getId());
-        taskManager.getByID(subtask.getId());
-        assertEquals(2, taskManager.getHistory().size());
+        assertEquals(3, taskManager.getHistory().size());
     }
 
     @Test

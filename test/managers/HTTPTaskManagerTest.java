@@ -1,9 +1,7 @@
 package managers;
 
 import com.google.gson.Gson;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,36 +14,53 @@ import static managers.HttpTaskServer.getGson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
     Gson gson = getGson();
-    HttpTaskServer httpTaskServer;
     KVServer kvServer;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    HttpTaskServer httpTaskServer;
+    HttpClient client = HttpClient.newHttpClient();
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = (HTTPTaskManager) taskManager;
+    }
+
+    public HTTPTaskManager getTaskManager() {
+        return this.taskManager;
+    }
+
+    @BeforeAll
+    void beforeAll() throws IOException {
+        kvServer = new KVServer();
+        kvServer.start();
+        setTaskManager(Managers.getDefault());
+        taskManager = getTaskManager();
+        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager);
+        httpTaskServer.start();
+    }
 
     @BeforeEach
     @Override
-    void init() throws IOException {
-        kvServer = new KVServer();
-        kvServer.start();
-        HttpTaskServer httpTaskServer = new HttpTaskServer(8082);
-        httpTaskServer.start();
-        taskManager = (HTTPTaskManager) Managers.getDefault();
-        super.init();
+    public void init() {
+        try {
+            taskManager = (HTTPTaskManager) Managers.getDefault();
+            super.init();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
-    void stop() {
+    public void stop() {
         if (httpTaskServer != null) {
             httpTaskServer.stop();
         }
-        if (kvServer != null) {
-            kvServer.stop();
-        }
     }
+
 
     @Test
     void shouldLoadHistoryFromServer() {
-        HTTPTaskManager h = new HTTPTaskManager("http://localhost:8083");
+        HTTPTaskManager h = new HTTPTaskManager("http://localhost:8081");
         h.load();
         assertEquals(taskManager.getHistory(), h.getHistory(), "История не совпадает");
         assertEquals(taskManager.getEpics(), h.getEpics(), "История не совпадает");
@@ -54,7 +69,7 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
 
     @Test
     void shouldSaveAndLoadTasksViaHTTP() {
-        HTTPTaskManager h = new HTTPTaskManager("http://localhost:8083");
+        HTTPTaskManager h = new HTTPTaskManager("http://localhost:8081");
         h.load();
         assertEquals(task, h.getByID(1));
         assertEquals(epic, h.getByID(2));
@@ -65,27 +80,38 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
     public void shouldSaveEmptyTasksAndEmptyHistoryAndLoadEmpty() {
         taskManager.deleteTasks();
         taskManager.deleteEpics();
-        HTTPTaskManager h = new HTTPTaskManager("http://localhost:8083");
+        HTTPTaskManager h = new HTTPTaskManager("http://localhost:8081");
         h.load();
         assertNull(h.getTask(0));
         assertEquals(new ArrayList<>(), h.getHistory());
     }
 
-    private HttpResponse<String> testGetRequest(String path) {
-        URI url = URI.create("http://localhost:8082/" + path);
+
+    @Test
+    public void shouldGetTaskHttp() throws IOException, InterruptedException {
+        URI url = URI.create("http://localhost:8082/tasks/task/?id=1");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
-        HttpResponse<String> response = null;
-        try {
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return response;
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String json = gson.toJson(taskManager.getTask(1));
+        assertEquals(200, response.statusCode());
+        assertEquals(json, response.body());
     }
 
     @Test
-    public void shouldGetTask() {
-        String json = gson.toJson(task);
-        assertEquals(json, testGetRequest("/tasks/task/?id=1").body());
+    void shouldCreateTaskHttp() throws IOException, InterruptedException {
+        URI url = URI.create("http://localhost:8082/tasks/task/");
+        String json = gson.toJson(taskManager.getTask(1));
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+    }
+
+    @Test
+    void shouldDeleteTaskHttp() throws IOException, InterruptedException {
+        URI url = URI.create("http://localhost:8082/tasks/task/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(205, response.statusCode());
     }
 }

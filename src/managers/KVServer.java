@@ -34,10 +34,7 @@ public class KVServer {
             }
 
             if ("GET".equals(h.getRequestMethod())) {
-                String key = h.getRequestURI().toString().substring("/load/".length());
-                if (key.startsWith("?API_TOKEN=")) {
-                    key = key.substring("?API_TOKEN=".length());
-                }
+                String key = h.getRequestURI().getPath().substring("/load/".length());
                 if (key.isEmpty()) {
                     System.out.println("Key для получения значения пустой. key указывается в пути: /load/{key}");
                     h.sendResponseHeaders(400, 0);
@@ -115,7 +112,7 @@ public class KVServer {
     }
 
     public void stop() {
-        server.stop(2);
+        server.stop(1);
     }
 
     private String generateApiToken() {

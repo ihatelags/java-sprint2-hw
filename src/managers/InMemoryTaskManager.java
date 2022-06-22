@@ -71,9 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!checkTimeIsValid(task)){
             return;
         }
-        if (task.getId() == 0) {
-            task.setId(++generatedID);
-        }
+        task.setId(++generatedID);
         tasks.put(task.getId(), task);
         sortedTasks.add(task);
     }
@@ -287,6 +285,10 @@ public class InMemoryTaskManager implements TaskManager {
                 deleteSubtask(id);
             }
         }
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
     @Override

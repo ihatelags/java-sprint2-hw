@@ -8,26 +8,23 @@ import tasks.Task;
 
 import java.util.List;
 
-import static managers.HttpTaskServer.getGson;
-
 
 public class HTTPTaskManager extends FileBackedTaskManager {
     private final KVTaskClient kvsClient;
-    private final HistoryManager historyManager = Managers.getDefaultHistoryManager();
-    private final Gson gson = getGson();
+    private final Gson gson = HttpTaskServer.getGson();
 
     public HTTPTaskManager(String url) {
         this.kvsClient = new KVTaskClient(url);
     }
 
     public void load() {
-        List<Task> allTasks = new Gson().fromJson(kvsClient.load("task"), new TypeToken<List<Task>>() {
+        List<Task> allTasks = gson.fromJson(kvsClient.load("task"), new TypeToken<List<Task>>() {
         }.getType());
-        List<Epic> allEpics = new Gson().fromJson(kvsClient.load("epic"), new TypeToken<List<Epic>>() {
+        List<Epic> allEpics = gson.fromJson(kvsClient.load("epic"), new TypeToken<List<Epic>>() {
         }.getType());
-        List<Subtask> allSubtasks = new Gson().fromJson(kvsClient.load("subtask"), new TypeToken<List<Subtask>>() {
+        List<Subtask> allSubtasks = gson.fromJson(kvsClient.load("subtask"), new TypeToken<List<Subtask>>() {
         }.getType());
-        List<Integer> history = new Gson().fromJson(kvsClient.load("history"), new TypeToken<List<Integer>>() {
+        List<Integer> history = gson.fromJson(kvsClient.load("history"), new TypeToken<List<Integer>>() {
         }.getType());
 
         for (Task task : allTasks) {
@@ -39,9 +36,11 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         for (Subtask subtask : allSubtasks) {
             subtasks.put(subtask.getId(),subtask);
         }
-        for (Integer id : history) {
-            Task task = getByID(id);
-            historyManager.add(task);
+        if (history!=null) {
+            for (Integer id : history) {
+                Task task = getByID(id);
+                history.add(task.getId());
+            }
         }
     }
 
@@ -51,6 +50,7 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         String allEpics = gson.toJson(getEpics());
         String allSubTasks = gson.toJson(getSubtasks());
         String history = gson.toJson(historyToString(historyManager));
+
         if (getTasks().size() > 0) {
             kvsClient.put("task", allTasks);
         }

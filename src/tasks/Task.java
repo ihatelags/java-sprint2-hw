@@ -24,7 +24,6 @@ public class Task {
     public Task(String name, String desc, Status status, LocalDateTime startTime, int duration) {
         this.name = name;
         this.desc = desc;
-        this.id = 0;
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
@@ -42,7 +41,6 @@ public class Task {
     public Task(String name, String desc, Status status) {
         this.name = name;
         this.desc = desc;
-        this.id = 0;
         this.status = status;
         this.startTime = null;
         this.duration = 0;

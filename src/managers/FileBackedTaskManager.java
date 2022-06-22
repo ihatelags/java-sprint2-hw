@@ -37,7 +37,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.append(toString(subtask));
             }
             writer.newLine();
-            writer.write(historyToString(super.historyManager));
+            writer.write(historyToString(historyManager));
         } catch (IOException e) {
             throw new ManagerSaveException(e.getMessage());
         }
@@ -204,18 +204,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
                 switch (task.getType()) {
                     case TASK:
-                        fileBackedTasksManager.tasks.put(task.getId(), task);
+                        fileBackedTasksManager.createTask(task);
                         break;
                     case EPIC:
-                        fileBackedTasksManager.epics.put(task.getId(), (Epic) task);
+                        fileBackedTasksManager.createEpic((Epic) task);
                         break;
                     case SUBTASK:
-                        fileBackedTasksManager.subtasks.put(task.getId(), (Subtask) task);
-                        Integer epicID = ((Subtask) task).getEpicId();
-                        Epic epic = fileBackedTasksManager.epics.get(epicID);
-                        if (epic != null) {
-                            epic.getSubtasks().add((Subtask) task);
-                        }
+                        fileBackedTasksManager.createSubtask((Subtask) task);
                         break;
                 }
             }
