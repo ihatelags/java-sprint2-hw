@@ -2,7 +2,6 @@ package managers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import exceptions.ManagerSaveException;
@@ -13,12 +12,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class HttpTaskServer {
     private static final int PORT = 8082;
     private final HttpServer server;
     private final Gson gson = getGson();
-    TaskManager manager;
+    private final TaskManager manager;
 
     public HttpTaskServer(TaskManager manager) {
         this.manager = manager;
@@ -56,12 +56,16 @@ public class HttpTaskServer {
     }
 
     public void handle(HttpExchange h) throws IOException {
+
         String uri = h.getRequestURI().toString();
         System.out.println("Началась обработка запроса " + uri + " от клиента.");
         String method = h.getRequestMethod();
         String[] arrUri = uri.split("/");
-        String taskType = arrUri[2];
         String response = "";
+        String taskType = "";
+        if (arrUri.length > 2 ) {
+            taskType = arrUri[2];
+        }
         int id = 0;
         int code = 200;
         if (arrUri[arrUri.length - 1].contains("?")) {
@@ -93,13 +97,12 @@ public class HttpTaskServer {
                         break;
                     case "history":
                         response = gson.toJson(manager.getHistory());
+                        break;
+                    case "":
+                        response = gson.toJson(manager.getPrioritizedTasks());
+                        break;
                     default:
-                        if (arrUri.length == 5 && arrUri[2].equals("subtask") && arrUri[3].equals("epic")) {
-                            response = gson.toJson(manager.getEpic(manager.getSubtask(id).getEpicId()));
-                        }
-                        if (response.isEmpty()) {
-                            code = 400;
-                        }
+                        code = 400;
                 }
                 break;
             case "POST":

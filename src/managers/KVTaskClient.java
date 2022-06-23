@@ -1,5 +1,7 @@
 package managers;
 
+import exceptions.HttpException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -26,6 +28,9 @@ public class KVTaskClient {
         handler = HttpResponse.BodyHandlers.ofString();
         try {
             response = client.send(request, handler);
+            if (response.statusCode() != 200){
+                throw new HttpException("Неверный код ответа: " + response.statusCode());
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -45,6 +50,9 @@ public class KVTaskClient {
                 .build();
         try {
             response = client.send(request, handler);
+            if (response.statusCode() != 200){
+                throw new HttpException("Неверный код ответа: " + response.statusCode());
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -60,6 +68,9 @@ public class KVTaskClient {
                 .build();
         try {
             response = client.send(request, handler);
+            if (response.statusCode() != 200){
+                throw new HttpException("Неверный код ответа: " + response.statusCode());
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

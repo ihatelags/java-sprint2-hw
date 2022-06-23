@@ -1,4 +1,4 @@
-import com.google.gson.Gson;
+import exceptions.HttpException;
 import managers.*;
 import tasks.*;
 
@@ -11,8 +11,6 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static managers.HttpTaskServer.getGson;
-
 public class Main {
     public static void main(String[] args) throws IOException {
         new KVServer().start();
@@ -20,7 +18,9 @@ public class Main {
         HttpTaskServer httpTaskServer = new HttpTaskServer(httpTaskManager);
         httpTaskServer.start();
         createTestObjects(httpTaskManager);
-        // test();
+        testClient("tasks/");
+        testClient("tasks/task/?id=1");
+        testClient("tasks/history");
         TaskManager fileTaskManager = new FileBackedTaskManager();
         createTestObjects(fileTaskManager);
     }
@@ -49,13 +49,16 @@ public class Main {
         taskManager.updateTask(task);
 
     }
-    private static void test(){
+    private static void testClient(String path){
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8082/tasks/task/?id=1");
+        URI url = URI.create("http://localhost:8082/" + path);
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200){
+                throw new HttpException("Неверный код ответа: " + response.statusCode());
+            }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

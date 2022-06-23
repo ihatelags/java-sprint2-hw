@@ -98,6 +98,26 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
     }
 
     @Test
+    public void shouldGetSubtaskHttp() throws IOException, InterruptedException {
+        URI url = URI.create("http://localhost:8082/tasks/subtask/?id=3");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String json = gson.toJson(taskManager.getSubtask(3));
+        assertEquals(200, response.statusCode());
+        assertEquals(json, response.body());
+    }
+
+    @Test
+    public void shouldGetEpicHttp() throws IOException, InterruptedException {
+        URI url = URI.create("http://localhost:8082/tasks/epic/?id=2");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String json = gson.toJson(taskManager.getEpic(2));
+        assertEquals(200, response.statusCode());
+        assertEquals(json, response.body());
+    }
+
+    @Test
     void shouldCreateTaskHttp() throws IOException, InterruptedException {
         URI url = URI.create("http://localhost:8082/tasks/task/");
         String json = gson.toJson(taskManager.getTask(1));
